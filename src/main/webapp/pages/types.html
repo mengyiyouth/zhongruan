@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:replace="admin/_fragments :: head(~{::title})">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, intial-scale-1.0">
+    <title>分类管理</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
+    <link rel="stylesheet" href="../static/css/me.css">
+    <script type="text/javascript">
+        var parentId = '[[${parentId}]]';
+    </script>
+</head>
+
+<body>
+
+<!--导航-->
+<!--引入自定义css,缩小间隔-->
+<nav th:replace="admin/_fragments :: menu(2)" class="ui inverted attached segment m-padded-tb-mini m-opacity-mini m-shadow-small">
+    <div class="ui container">
+        <div class="ui inverted secondary stackable menu">
+            <h2 class="ui header item">管理后台</h2>
+            <a href="#" class="m-item item m-mobile-hide"><i class="mini home icon"></i>博客</a>
+            <a href="#" class="active m-item item m-mobile-hide"><i class="mini clone outline icon"></i>分类</a>
+            <a href="#" class="m-item item m-mobile-hide"><i class="mini tags icon"></i>标签</a>
+            <!--右侧菜单-->
+            <div class="right m-item menu m-mobile-hide">
+                <div class="ui dropdown item">
+                    <div class="text">
+                        <img class="ui avatar image" src="https://i.picsum.photos/id/1008/100/100.jpg">
+                        莉莉安
+                    </div>
+                    <i class="dropdown icon"></i>
+                    <div class="menu">
+                        <a href="#" class="item">注销</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <a href="#" class="ui menu toggle blue icon button m-right-top m-mobile-show">
+        <i class="sidebar icon"></i>
+    </a>
+</nav>
+
+<!--二级导航-->
+<div class="ui attached pointing menu m-opacity-tiny">
+    <div class="ui container">
+        <div class="ui menu">
+            <a href="#" th:href="@{/admin/types/input}" class="item">新增</a>
+            <a href="#" th:href="@{/admin/types}"class="active teal item">列表</a>
+        </div>
+    </div>
+</div>
+
+中间内容
+<div class="m-padded-tb-large m-opacity-tiny m-container-small">
+    <!--contianer能够较好的适用于移动端-->
+    <div class="ui container">
+
+        <div class="ui success message" th:unless="${#strings.isEmpty(message)}">
+            <i class="close icon"></i>
+            <div class="header">提示</div>
+            <p th:text="${message}">新增成功</p>
+        </div>
+
+        <table class="ui celled table">
+            <thead>
+            <tr><th></th>
+                <th>书名</th>
+                <th>作者</th>
+                <th>操作</th>
+            </tr></thead>
+            <tbody>
+            <tr th:each="book : ${books}">
+                <input id="parentId" name="parentId" class="form-control" type="text" th:value= "parentId">
+                <td th:text="${book.id}">1</td>
+                <td th:text="${book.bookname}">白夜行</td>
+                <td th:text="${book.author}">东野圭吾</td>
+                <td>
+                    <a href="#" th:href="@{/admin/types/{id}/input(id=${type.id})}" class="ui mini teal basic button">编辑</a>
+                    <a href="#" th:href="@{/admin/types/{id}/delete(id=${type.id})}" class="ui mini red basic button">删除</a>
+                </td>
+            </tr>
+            </tbody>
+            <!--表的底部-->
+            <tfoot>
+                <tr>
+                    <!--合并单元格-->
+                    <th colspan="6">
+                        <div class="ui mini pagination menu" th:if="${pageInfo.pages} > 1">
+                            <a href="#" class="item" th:href="@{/admin/types(pageNum=${pageInfo.hasPreviousPage}?${pageInfo.prePage}:1)}" th:unless="${pageInfo.isFirstPage}">上一页</a>
+                            <a href="#" class="item" th:href="@{/admin/types(pageNum=${pageInfo.hasNextPage}?${pageInfo.nextPage}:${pageInfo.pages})}" th:unless="${pageInfo.isLastPage}">下一页</a>
+                            <a onclick="page"></a>
+                        </div>
+                        <a href="#" th:href="@{/admin/types/input}" class="ui mini right floated teal basic button">新增</a>
+                    </th>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>
+
+<!--&lt;!&ndash;底部&ndash;&gt;-->
+<!--<footer th:replace="admin/_fragments :: footer" class="ui inverted vertical segment m-padded-tb-huge m-opacity-mini">-->
+<!--    &lt;!&ndash;容器&ndash;&gt;-->
+<!--    <div class="ui center aligned container">-->
+<!--        &lt;!&ndash;底部分割线&ndash;&gt;-->
+<!--        <div class="ui section divider"></div>-->
+<!--        <div class="ui inverted divided stackable grid">-->
+<!--            <div class="four wide column">-->
+<!--                &lt;!&ndash;这里让其在与顶端再隔开一段，达到横向居中的效果&ndash;&gt;-->
+<!--                <div style="font-size: large;font-weight: bold" class="ui inverted m-text-thin m-text-spaced-->
+<!--                    m-margin-top-large">联系我</div>-->
+<!--                <div class="ui inverted link list">-->
+<!--                    <div href="#" class="m-text-thin">Email: mengyiyouth@163.com</div>-->
+<!--                    <div href="#" class="m-text-thin">QQ: 1197875732</div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--            &lt;!&ndash;显示微信二维码&ndash;&gt;-->
+<!--            <div class="four wide column" >-->
+<!--                <div class="ui inverted link list">-->
+<!--                    <div class="item">-->
+<!--                        &lt;!&ndash;微信二维码&ndash;&gt;-->
+<!--                        <div style="font-size: large;font-weight: bold" class="ui inverted m-text-thin m-text-spaced">微信</div>-->
+<!--                        <img src="../../static/images/wechat.png" class="ui m-margin-top rounded image" alt="" style="width: 110px">-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--            &lt;!&ndash;最新博客&ndash;&gt;-->
+<!--            &lt;!&ndash;                <div class="three wide column">&ndash;&gt;-->
+<!--            &lt;!&ndash;                    <h4 class="ui inverted header m-text-thin m-text-space">最新博客</h4>&ndash;&gt;-->
+<!--            &lt;!&ndash;                    <div class="ui inverted link list">&ndash;&gt;-->
+<!--            &lt;!&ndash;                        <a href="#" class="item">用户故事(啦啦啦)</a>&ndash;&gt;-->
+<!--            &lt;!&ndash;                        <a href="#" class="item">用户故事(啦啦啦)</a>&ndash;&gt;-->
+<!--            &lt;!&ndash;                        <a href="#" class="item">用户故事(啦啦啦)</a>&ndash;&gt;-->
+<!--            &lt;!&ndash;                    </div>&ndash;&gt;-->
+<!--            &lt;!&ndash;                </div>&ndash;&gt;-->
+
+<!--            <div class="eight wide column">-->
+<!--                <div style="font-size: large;font-weight: bold" class="ui inverted m-text-thin m-text-spaced-->
+<!--                    m-margin-top-large">博客介绍</div>-->
+<!--                <div class="ui inverted link list">-->
+<!--                    <p class="inverted m-text-thin m-text-space">本博客，是为我的一个朋友马户先生所开，旨在讲述马户先生年轻时，风花雪月，快意恩仇，饮马-->
+<!--                        江湖的故事，如有雷同，纯属虚构</p>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+
+<!--        &lt;!&ndash;分割线&ndash;&gt;-->
+<!--        <div class="ui section divider"></div>-->
+<!--        <p class="m-text-thin m-text-space">我的一个马户朋友</p>-->
+<!--    </div>-->
+<!--</footer>-->
+<!--/*/<th:block th:replace="admin/_fragments :: script">/*/-->
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.2/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
+<!--/*/</th:block>/*/-->
+
+
+<!--增加点击事件，隐藏按钮-->
+<script>
+
+    //消息提示关闭初始化
+    $('.message .close')
+        .on('click', function () {
+            $(this)
+                .closest('.message')
+                .transition('fade');
+        });
+
+    $('.menu.toggle').click(function () {
+        $('.m-item').toggleClass('m-mobile-hide');
+    })
+
+    /*初始化下拉组件*/
+    $('.ui.dropdown').dropdown({
+        on: 'hover'
+    });
+</script>
+</body>
+</html>

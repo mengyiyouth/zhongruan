@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http//mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mengyi.dao.bookDao">
+
+    <select id="findAllBook" resultType="com.mengyi.entity.Book">
+        select * from books
+    </select>
+
+    <update id="updateBookById" parameterType="com.mengyi.entity.Book">
+        update books set bookname = #{bookname}, author = #{author} where id = #{id}
+    </update>
+
+    <delete id="delete" parameterType="int">
+        delete from books where id = #{id}
+    </delete>
+
+    <insert id="insert" parameterType="com.mengyi.entity.Book">
+        insert into books (bookname, author) values(#{bookname}, #{author})
+    </insert>
+
+    <select id="getSearchBooks" parameterType="String" resultType="Book">
+        select * from books where bookname like concat('%',#{query},'%') or author like concat('%',#{query},'%')
+    </select>
+
+    <select id="findBookById" parameterType="int" resultType="com.mengyi.entity.Book">
+        select * from books where id = #{id}
+    </select>
+</mapper>
